@@ -42,48 +42,60 @@ To design and simulate a seven-segment display driver using Verilog HDL, and ver
 
 ```verilog
 // seven_segment_display.v
-module seven_segment_display (
-    input wire [3:0] binary_input,
-    output reg [6:0] seg_output
+module BCD(
+    input [3:0] bcd,
+    output reg [6:0] seg
 );
-
-always @(*) begin
-    case (binary_input)
-        
-        
-        default: seg_output = 7'b0000000; // blank or error
-    endcase
-end
-
+    always @(*) begin
+        case(bcd)
+            4'b0000: seg = 7'b0111111; 
+            4'b0001: seg = 7'b0000110;
+            4'b0010: seg = 7'b1011011; 
+            4'b0011: seg = 7'b1001111; 
+            4'b0100: seg = 7'b1100110; 
+            4'b0101: seg = 7'b1101101; 
+            4'b0110: seg = 7'b1111101; 
+            4'b0111: seg = 7'b0000111; 
+            4'b1000: seg = 7'b1111111; 
+            4'b1001: seg = 7'b1101111; 
+            default: seg = 7'b0000000; 
+        endcase
+    end
 endmodule
 ```
 ## Testbench for Seven-Segment Display
 ```verilog
 
 `timescale 1ns / 1ps
-module seven_segment_display_tb;
-// Inputs
-reg [3:0] binary_input;
-// Outputs
-wire [6:0] seg_output;
-// Instantiate the Unit Under Test (UUT)
-seven_segment_display uut (
-    .binary_input(binary_input),
-    .seg_output(seg_output)
-);
-// Test procedure
-initial begin
-    // Initialize inputs
-    binary_input = 4'b0000;
-
-end
-
-
+module BCD_tb;
+    reg [3:0] bcd;
+    wire [6:0] seg;
+    BCD uut (
+        .bcd(bcd),
+        .seg(seg)
+    );
+    initial begin
+        $monitor("Time=%0t | BCD=%b (%0d) | seg=%b", $time, bcd, bcd, seg);
+        bcd = 4'b0000; #10; 
+        bcd = 4'b0001; #10; 
+        bcd = 4'b0010; #10; 
+        bcd = 4'b0011; #10; 
+        bcd = 4'b0100; #10; 
+        bcd = 4'b0101; #10; 
+        bcd = 4'b0110; #10;
+        bcd = 4'b0111; #10; 
+        bcd = 4'b1000; #10; 
+        bcd = 4'b1001; #10; 
+        bcd = 4'b1010; #10; 
+        bcd = 4'b1111; #10; 
+        $stop;
+    end
 endmodule
 ```
 ## Simulated Output
 
-_____ Keep Simulated output ___________
+<img width="1916" height="1078" alt="image" src="https://github.com/user-attachments/assets/1e853f29-cd32-4736-b1f2-507e79652564" />
+
 
 ---
 
